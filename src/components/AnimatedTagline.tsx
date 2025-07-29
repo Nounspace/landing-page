@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const AnimatedTagline: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState('space');
@@ -8,6 +9,7 @@ const AnimatedTagline: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
   const [showCursor, setShowCursor] = useState(true);
+  const [dropdownIndex, setDropdownIndex] = useState(0);
 
   const dropdownOptions = ['space', 'token', 'agent'];
   
@@ -53,6 +55,20 @@ const AnimatedTagline: React.FC = () => {
 
     return () => clearInterval(cursorInterval);
   }, []);
+
+  // Auto-cycle dropdown options
+  useEffect(() => {
+    const cycleInterval = setInterval(() => {
+      setDropdownIndex((prev) => (prev + 1) % dropdownOptions.length);
+    }, 6000); // 6 seconds between each option
+
+    return () => clearInterval(cycleInterval);
+  }, []);
+
+  // Update selected option when dropdown index changes
+  useEffect(() => {
+    setSelectedOption(dropdownOptions[dropdownIndex]);
+  }, [dropdownIndex]);
 
   // Typewriter animation effect
   useEffect(() => {
@@ -100,9 +116,26 @@ const AnimatedTagline: React.FC = () => {
         <div className="relative inline-block">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className={`${dropdownGradients[selectedOption as keyof typeof dropdownGradients]} bg-clip-text text-transparent transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50 rounded-lg px-2 py-2 pb-3 inline-flex items-center gap-2 pointer-events-auto hover:opacity-80`}
+            className="focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50 rounded-lg px-2 py-3 pb-4 inline-flex items-center gap-2 pointer-events-auto hover:opacity-80 relative"
           >
-            {selectedOption}
+            <div className="relative overflow-visible" style={{ minHeight: '1.2em' }}>
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={selectedOption}
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -30, opacity: 0 }}
+                  transition={{ 
+                    duration: 0.5, 
+                    ease: [0.4, 0.0, 0.2, 1] // Custom easing for smooth animation
+                  }}
+                  className={`${dropdownGradients[selectedOption as keyof typeof dropdownGradients]} bg-clip-text text-transparent block leading-none`}
+                  style={{ lineHeight: '1.1' }}
+                >
+                  {selectedOption}
+                </motion.span>
+              </AnimatePresence>
+            </div>
             <ChevronDown 
               className={`w-6 h-6 md:w-8 md:h-8 transition-transform duration-200 ${
                 isDropdownOpen ? 'rotate-180' : ''
