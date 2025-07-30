@@ -1,10 +1,10 @@
-import React from 'react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import AnimatedGrid from './components/AnimatedGrid';
 import Logo from './components/Logo';
 import AnimatedTagline from './components/AnimatedTagline';
 import WaitlistForm from './components/WaitlistForm';
+import LogoToVideoPlayer from './components/LogoToVideoPlayer';
 
 function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -15,20 +15,12 @@ function App() {
 
   return (
     <div className="relative">
+      {/* Logo to Video Player - Shows over everything */}
+      <LogoToVideoPlayer />
+
       {/* Content Overlay */}
       <div className="fixed inset-0 z-20 pointer-events-none">
         <div className="h-full flex flex-col">
-          {/* Header with Logo */}
-          <header className="p-6 md:p-8 pointer-events-auto">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              <Logo />
-            </motion.div>
-          </header>
-
           {/* Main Content */}
           <main className="flex-1 flex items-center justify-center px-6 pointer-events-none">
             <div className="text-center">
