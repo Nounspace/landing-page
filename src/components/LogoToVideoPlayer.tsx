@@ -8,19 +8,11 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
   const [hasUserClicked, setHasUserClicked] = useState(false);
   const [curtainPosition, setCurtainPosition] = useState(0);
   const [isDissolving, setIsDissolving] = useState(false);
   const [hideContent, setHideContent] = useState(false);
-  const [videoSupported, setVideoSupported] = useState(true);
   const [videoOpacity, setVideoOpacity] = useState(0);
-
-  useEffect(() => {
-    // Check if video is supported
-    const video = document.createElement('video');
-    setVideoSupported(!!video.canPlayType);
-  }, []);
 
   useEffect(() => {
     // Once video is loaded, fade it in and wait 3 seconds then autoplay (unless user already clicked)
@@ -81,8 +73,10 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
 
   const handleVideoClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    if(!hasUserClicked){
+      togglePlay();
+    }
     setHasUserClicked(true);
-    togglePlay();
   };
 
   const handleLogoClick = () => {
@@ -107,16 +101,12 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
     onVideoEnd?.();
   };
 
-  if (!isVisible) {
-    return null;
-  }
-
   const featherSize = 50; // Size of the feathered edge
   const curtainWidth = Math.max(0, window.innerWidth / 2 - curtainPosition);
   const curtainHeight = Math.max(0, window.innerHeight / 2 - curtainPosition);
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center ${!videoLoaded && videoSupported ? 'bg-white' : ''} ${isDissolving ? 'pointer-events-none' : ''}`}>
+    <div className={`fixed inset-0 z-50 flex items-center justify-center ${!videoLoaded ? 'bg-white' : ''} ${isDissolving ? 'pointer-events-none' : ''}`}>
       {/* Left curtain */}
       <div 
         className="absolute top-0 left-0 h-full"
@@ -158,36 +148,34 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
       />
 
       {!hideContent && (
-        <div className="relative w-full lg:w-2/5 h-auto max-h-full">
+        <div className="w-full lg:w-2/5 h-auto max-h-full">
           {/* Video Player - fades in once loaded */}
-          {videoSupported && (
-            <div 
-              className="relative w-full h-full cursor-pointer"
-              onClick={handleVideoClick}
-              style={{
-                opacity: videoOpacity,
-                transition: 'opacity 0.5s ease-in-out'
-              }}
+          <div 
+            className="relative w-full h-full cursor-pointer"
+            onClick={handleVideoClick}
+            style={{
+              opacity: videoOpacity,
+              transition: 'opacity 0.5s ease-in-out'
+            }}
+          >
+            <video
+              ref={videoRef}
+              className="w-full h-auto object-contain"
+              onLoadedData={handleVideoLoaded}
+              onPlay={handlePlay}
+              onPause={handlePause}
+              onEnded={handleVideoEnd}
+              playsInline
+              preload="auto"
+              muted
             >
-              <video
-                ref={videoRef}
-                className="w-full h-auto object-contain"
-                onLoadedData={handleVideoLoaded}
-                onPlay={handlePlay}
-                onPause={handlePause}
-                onEnded={handleVideoEnd}
-                playsInline
-                preload="auto"
-                muted
-              >
-                <source src="/logovid.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-          )}
+              <source src="/logovid.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
 
           {/* Fallback Logo Image - shows if video not supported or while loading */}
-          {(!videoSupported) && (
+          {/* {(!videoSupported) && (
             <div className="w-full h-full flex items-center justify-center cursor-pointer" onClick={handleLogoClick}>
               <img
                 src="/logo.png"
@@ -195,7 +183,7 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
                 className="w-3/5 object-contain"
               />
             </div>
-          )}
+          )} */}
         </div>
       )}
     </div>
