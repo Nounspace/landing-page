@@ -167,7 +167,18 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
               >
                 <X className="w-5 h-5" />
               </button>
-              <img src="/logo.png" alt="Logo" className="h-16 mb-2 mx-auto" />
+              <motion.img 
+                src="/logo.png" 
+                alt="Logo" 
+                className="h-16 mb-2 mx-auto"
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.6, 
+                  ease: "easeOut",
+                  delay: 0.2
+                }}
+              />
               <p className="text-white text-opacity-60 text-center font-secondary text-sm">
                 Be the first to know when we launch
               </p>
