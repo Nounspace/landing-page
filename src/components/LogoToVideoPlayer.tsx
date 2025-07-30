@@ -98,7 +98,7 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
   const curtainHeight = Math.max(0, window.innerHeight / 2 - curtainPosition);
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center ${isDissolving ? 'pointer-events-none' : ''}`}>
+    <div className={`fixed inset-0 z-50 flex items-center justify-center ${!videoLoaded ? 'bg-white' : ''} ${isDissolving ? 'pointer-events-none' : ''}`}>
       {/* Left curtain */}
       <div 
         className="absolute top-0 left-0 h-full"

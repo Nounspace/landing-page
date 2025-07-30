@@ -125,7 +125,7 @@ class AnimatedGrid extends Component<{}, GridState> {
                 height: '100%',
                 left: 0,
                 top: 0,
-                outline: '1px solid black',
+                outline: '1px solid rgba(202, 202, 202, 0.46)',
                 display: 'block',
                 pointerEvents: 'none'
               }}

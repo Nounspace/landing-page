@@ -19,7 +19,7 @@ function App() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative bg-white min-h-screen">
       {/* Logo to Video Player - Shows over everything */}
       <LogoToVideoPlayer onVideoEnd={handleVideoEnd} />
 
@@ -57,8 +57,8 @@ function App() {
                   animate={videoFinished ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
                 >
-                  <div className="inline-block bg-white/40 backdrop-blur-sm px-8 py-4 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                    <span className="text-gray-800 font-medium text-sm">Coming Fall 2025</span>
+                  <div className="inline-block bg-white px-4 py-2" style={{ boxShadow: 'inset 2px 2px 15px rgba(255,255,255,0.5)' }}>
+                    <span className="text-gray-800 font-medium text-sm opacity-70">Coming Fall 2025</span>
                   </div>
                 </motion.div>
               </motion.div>
@@ -68,9 +68,7 @@ function App() {
       </div>
 
       {/* Animated Grid Background */}
-      <div className="fixed inset-0 z-10 pointer-events-auto">
-        <AnimatedGrid />
-      </div>
+      <AnimatedGrid />
 
       {/* Waitlist Form Modal */}
       <WaitlistForm 
