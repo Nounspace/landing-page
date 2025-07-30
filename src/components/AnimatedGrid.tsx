@@ -25,7 +25,7 @@ class AnimatedGrid extends Component<{}, GridState> {
 
   handleStagger = (clickedIndex: number) => {
     console.log('Stagger animation triggered for index:', clickedIndex);
-    const { columns } = this.state;
+    const { columns, rows } = this.state;
     
     if (!this.gridRef.current) return;
     
@@ -38,11 +38,8 @@ class AnimatedGrid extends Component<{}, GridState> {
     
     const items = this.gridRef.current.querySelectorAll('.grid-item');
     
-    // Create chromatic aberration colors (red, green, blue channels)
-    const baseColor = randomColor();
-    const redChannel = this.adjustColorChannel(baseColor, 'red', 1.4);
-    const greenChannel = this.adjustColorChannel(baseColor, 'green', 1.2);
-    const blueChannel = this.adjustColorChannel(baseColor, 'blue', 0.8);
+    // Simple, smooth wave with random color
+    const waveColor = randomColor();
     
     items.forEach((item, index) => {
       const clickedRow = Math.floor(clickedIndex / columns);
@@ -51,36 +48,37 @@ class AnimatedGrid extends Component<{}, GridState> {
       const itemCol = index % columns;
       
       const distance = Math.abs(itemRow - clickedRow) + Math.abs(itemCol - clickedCol);
-      const baseDelay = distance * 30; // Faster ripple
+      const baseDelay = distance * 100; // Even slower for smoother effect
       
-      // Create ripple effect with chromatic aberration
-      const rippleDuration = 800; // ms
-      const fadeDuration = 400; // ms
+      // Calculate fade intensity based on distance
+      const maxDistance = Math.max(columns, rows);
+      const fadeIntensity = Math.max(0.1, 1 - (distance / maxDistance));
       
-      // Red channel (fastest)
-      const redTimeout = setTimeout(() => {
+      // Simple, smooth animation
+      const animationDuration = 300; // ms
+      
+      const waveTimeout = setTimeout(() => {
         if (currentAnimationId === this.animationId) {
-          this.animateRipple(item as HTMLElement, redChannel, baseDelay, rippleDuration, fadeDuration, currentAnimationId);
+          this.animateSimpleWave(item as HTMLElement, waveColor, animationDuration, currentAnimationId, fadeIntensity);
         }
       }, baseDelay);
-      this.animationTimeouts.add(redTimeout);
-      
-      // Green channel (medium)
-      const greenTimeout = setTimeout(() => {
-        if (currentAnimationId === this.animationId) {
-          this.animateRipple(item as HTMLElement, greenChannel, baseDelay + 50, rippleDuration, fadeDuration, currentAnimationId);
-        }
-      }, baseDelay + 50);
-      this.animationTimeouts.add(greenTimeout);
-      
-      // Blue channel (slowest)
-      const blueTimeout = setTimeout(() => {
-        if (currentAnimationId === this.animationId) {
-          this.animateRipple(item as HTMLElement, blueChannel, baseDelay + 100, rippleDuration, fadeDuration, currentAnimationId);
-        }
-      }, baseDelay + 100);
-      this.animationTimeouts.add(blueTimeout);
+      this.animationTimeouts.add(waveTimeout);
     });
+  };
+
+  fadeColor = (color: string, intensity: number): string => {
+    // Convert hex to RGB
+    const hex = color.replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    
+    // Apply intensity and blend with white for fade effect
+    const newR = Math.floor(r * intensity + 255 * (1 - intensity));
+    const newG = Math.floor(g * intensity + 255 * (1 - intensity));
+    const newB = Math.floor(b * intensity + 255 * (1 - intensity));
+    
+    return `rgb(${newR}, ${newG}, ${newB})`;
   };
 
   adjustColorChannel = (color: string, channel: 'red' | 'green' | 'blue', factor: number): string => {
@@ -133,35 +131,23 @@ class AnimatedGrid extends Component<{}, GridState> {
     }
   };
 
-  animateRipple = (element: HTMLElement, color: string, delay: number, duration: number, fadeDuration: number, animationId: number) => {
+  animateSimpleWave = (element: HTMLElement, color: string, duration: number, animationId: number, fadeIntensity: number = 1) => {
     // Only proceed if this is still the current animation
     if (animationId !== this.animationId) return;
     
-    // Set initial color with subtle scale effect
-    element.style.backgroundColor = color;
-    element.style.transform = 'scale(1.05)';
-    element.style.transition = `background-color ${duration}ms ease-out, opacity ${fadeDuration}ms ease-out, transform ${duration}ms ease-out`;
+    // Apply fade intensity to color
+    const fadedColor = this.fadeColor(color, fadeIntensity);
     
-    // Create ripple effect with opacity
-    element.style.opacity = '0.9';
+    // Simple color transition
+    element.style.backgroundColor = fadedColor;
+    element.style.transition = `background-color ${duration}ms ease-out`;
     
-    // Fade out after peak
-    const fadeTimeout = setTimeout(() => {
-      if (animationId === this.animationId) {
-        element.style.opacity = '0.3';
-        element.style.transform = 'scale(0.98)';
-      }
-    }, delay + duration / 2);
-    this.animationTimeouts.add(fadeTimeout);
-    
-    // Reset to white
+    // Reset to white after animation
     const resetTimeout = setTimeout(() => {
       if (animationId === this.animationId) {
         element.style.backgroundColor = '#fff';
-        element.style.opacity = '1';
-        element.style.transform = 'scale(1)';
       }
-    }, delay + duration);
+    }, duration);
     this.animationTimeouts.add(resetTimeout);
   };
 

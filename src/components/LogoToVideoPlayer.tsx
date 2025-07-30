@@ -45,7 +45,7 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
       
       // Calculate max position (half screen width/height plus feather size)
       const featherSize = 50;
-      const maxPosition = Math.min(window.innerWidth / 2 + featherSize, window.innerHeight / 2 + featherSize);
+      const maxPosition = Math.max(window.innerWidth / 2 + featherSize, window.innerHeight / 2 + featherSize);
       
       const startTime = Date.now();
       const animate = () => {
@@ -187,12 +187,12 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
           )}
 
           {/* Fallback Logo Image - shows if video not supported or while loading */}
-          {(!videoSupported || !videoLoaded) && (
+          {(!videoSupported) && (
             <div className="w-full h-full flex items-center justify-center cursor-pointer" onClick={handleLogoClick}>
               <img
                 src="/logo.png"
                 alt="Brand Logo"
-                className="w-[30%] h-auto object-contain"
+                className="w-3/5 object-contain"
               />
             </div>
           )}

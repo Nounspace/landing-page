@@ -45,7 +45,7 @@ function App() {
               >
                 <button
                   onClick={handleJoinWaitlist}
-                  className="z-50 group relative px-8 py-4 bg-black text-white font-semibold text-lg rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-gray-400 focus:ring-opacity-50 border-2 border-gray-300 pointer-events-auto font-primary"
+                  className="z-10 group relative px-8 py-4 bg-black text-white font-semibold text-lg rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-gray-400 focus:ring-opacity-50 border-2 border-gray-300 pointer-events-auto font-primary"
                 >
                   <span className="relative z-10">Join Waitlist</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
