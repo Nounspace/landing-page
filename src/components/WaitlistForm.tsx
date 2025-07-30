@@ -167,8 +167,8 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
               >
                 <X className="w-5 h-5" />
               </button>
-              <h2 className="text-2xl font-bold mb-2">Join the Waitlist</h2>
-              <p className="text-white text-opacity-90">
+              <img src="/logo.png" alt="Logo" className="h-16 mb-2 mx-auto" />
+              <p className="text-white text-opacity-60 text-center font-secondary text-sm">
                 Be the first to know when we launch
               </p>
             </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import AnimatedGrid from './components/AnimatedGrid';
 import Logo from './components/Logo';
@@ -6,11 +6,31 @@ import AnimatedTagline from './components/AnimatedTagline';
 import WaitlistForm from './components/WaitlistForm';
 import LogoToVideoPlayer from './components/LogoToVideoPlayer';
 
+// Import the interface from AnimatedGrid
+interface AnimatedGridRef {
+  triggerWaveFromPosition: (screenX: number, screenY: number) => void;
+}
+
 function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [videoFinished, setVideoFinished] = useState(false);
+  const gridRef = useRef<AnimatedGridRef>(null);
 
-  const handleJoinWaitlist = () => {
+  const handleJoinWaitlist = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // Get the button's center position
+    const button = event.currentTarget;
+    const buttonRect = button.getBoundingClientRect();
+    const centerX = buttonRect.left + buttonRect.width / 2;
+    const centerY = buttonRect.top + buttonRect.height / 2;
+    
+    console.log('Button center position:', centerX, centerY);
+    
+    // Trigger wave animation from button center
+    if (gridRef.current && gridRef.current.triggerWaveFromPosition) {
+      gridRef.current.triggerWaveFromPosition(centerX, centerY);
+    }
+    
+    // Open the form
     setIsFormOpen(true);
   };
 
@@ -68,7 +88,7 @@ function App() {
       </div>
 
       {/* Animated Grid Background */}
-      <AnimatedGrid />
+      <AnimatedGrid ref={gridRef} />
 
       {/* Waitlist Form Modal */}
       <WaitlistForm 

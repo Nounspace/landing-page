@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, forwardRef, useImperativeHandle } from 'react';
 import { randomColor } from '../utils/randomColor';
 
 interface GridState {
@@ -12,6 +12,10 @@ interface AnimationState {
   currentAnimationId: number;
 }
 
+interface AnimatedGridRef {
+  triggerWaveFromPosition: (screenX: number, screenY: number) => void;
+}
+
 class AnimatedGrid extends Component<{}, GridState> {
   private gridRef = React.createRef<HTMLDivElement>();
   private animationTimeouts: Set<number> = new Set();
@@ -21,6 +25,55 @@ class AnimatedGrid extends Component<{}, GridState> {
     columns: 0,
     rows: 0,
     total: 1
+  };
+
+  // New method to trigger wave from a specific screen position
+  triggerWaveFromPosition = (screenX: number, screenY: number) => {
+    console.log('Triggering wave from position:', screenX, screenY);
+    const { columns, rows } = this.state;
+    
+    if (!this.gridRef.current) return;
+    
+    // Clear any existing animations
+    this.clearAllAnimations();
+    
+    // Increment animation ID to track this new animation
+    this.animationId++;
+    const currentAnimationId = this.animationId;
+    
+    const items = this.gridRef.current.querySelectorAll('.grid-item');
+    const gridRect = this.gridRef.current.getBoundingClientRect();
+    
+    // Convert screen position to grid position
+    const gridX = Math.floor((screenX - gridRect.left) / 50);
+    const gridY = Math.floor((screenY - gridRect.top) / 50);
+    
+    console.log('Grid position:', gridX, gridY);
+    
+    // Simple, smooth wave with random color
+    const waveColor = randomColor();
+    
+    items.forEach((item, index) => {
+      const itemRow = Math.floor(index / columns);
+      const itemCol = index % columns;
+      
+      const distance = Math.abs(itemRow - gridY) + Math.abs(itemCol - gridX);
+      const baseDelay = distance * 100; // Even slower for smoother effect
+      
+      // Calculate fade intensity based on distance
+      const maxDistance = Math.max(columns, rows);
+      const fadeIntensity = Math.max(0.1, 1 - (distance / maxDistance));
+      
+      // Simple, smooth animation
+      const animationDuration = 300; // ms
+      
+      const waveTimeout = setTimeout(() => {
+        if (currentAnimationId === this.animationId) {
+          this.animateSimpleWave(item as HTMLElement, waveColor, animationDuration, currentAnimationId, fadeIntensity);
+        }
+      }, baseDelay);
+      this.animationTimeouts.add(waveTimeout);
+    });
   };
 
   handleStagger = (clickedIndex: number) => {
@@ -250,4 +303,19 @@ class AnimatedGrid extends Component<{}, GridState> {
   }
 }
 
-export default AnimatedGrid;
+// Wrap the class component with forwardRef
+const AnimatedGridWithRef = forwardRef<AnimatedGridRef, {}>((props, ref) => {
+  const gridInstance = React.useRef<AnimatedGrid>(null);
+
+  useImperativeHandle(ref, () => ({
+    triggerWaveFromPosition: (screenX: number, screenY: number) => {
+      if (gridInstance.current) {
+        gridInstance.current.triggerWaveFromPosition(screenX, screenY);
+      }
+    }
+  }));
+
+  return <AnimatedGrid ref={gridInstance} {...props} />;
+});
+
+export default AnimatedGridWithRef;
