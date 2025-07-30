@@ -1,6 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-const LogoToVideoPlayer = () => {
+interface LogoToVideoPlayerProps {
+  onVideoEnd?: () => void;
+}
+
+const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -82,6 +86,7 @@ const LogoToVideoPlayer = () => {
     setIsPlaying(false);
     setHideContent(true);
     setIsDissolving(true);
+    onVideoEnd?.();
   };
 
   if (!isVisible) {
@@ -142,7 +147,7 @@ const LogoToVideoPlayer = () => {
               <img
                 src="/logo.png"
                 alt="Brand Logo"
-                className="w-full h-auto object-contain"
+                className="w-[30%] h-auto object-contain"
               />
             </div>
           )}

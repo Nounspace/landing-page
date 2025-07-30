@@ -8,15 +8,20 @@ import LogoToVideoPlayer from './components/LogoToVideoPlayer';
 
 function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [videoFinished, setVideoFinished] = useState(false);
 
   const handleJoinWaitlist = () => {
     setIsFormOpen(true);
   };
 
+  const handleVideoEnd = () => {
+    setVideoFinished(true);
+  };
+
   return (
     <div className="relative">
       {/* Logo to Video Player - Shows over everything */}
-      <LogoToVideoPlayer />
+      <LogoToVideoPlayer onVideoEnd={handleVideoEnd} />
 
       {/* Content Overlay */}
       <div className="fixed inset-0 z-20 pointer-events-none">
@@ -26,7 +31,7 @@ function App() {
             <div className="text-center">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={videoFinished ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
               >
                 <AnimatedTagline />
@@ -35,7 +40,7 @@ function App() {
               <motion.div
                 className="space-y-6 mt-8"
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={videoFinished ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
               >
                 <button
@@ -46,14 +51,16 @@ function App() {
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
                 </button>
 
-                <motion.p
-                  className="text-gray-600 text-sm mt-4"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 1, delay: 0.6 }}
+                <motion.div
+                  className="mt-4 relative"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={videoFinished ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
                 >
-                  Coming Fall 2025
-                </motion.p>
+                  <div className="inline-block bg-white/40 backdrop-blur-sm px-8 py-4 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                    <span className="text-gray-800 font-medium text-sm">Coming Fall 2025</span>
+                  </div>
+                </motion.div>
               </motion.div>
             </div>
           </main>
