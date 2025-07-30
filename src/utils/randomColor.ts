@@ -1,10 +1,20 @@
-// Random color generator for the grid animation
+// Random color generator for chromatic aberration effects
 export const randomColor = (): string => {
   const colors = [
-    '#00FFFF', '#FF00FF', '#FFFF00', // Cyan, Magenta, Yellow (less saturated)
-    '#80FFFF', '#FF80FF', '#FFFF80', // Light Cyan, Light Magenta, Light Yellow
-    '#40FFFF', '#FF40FF', '#FFFF40', // Medium Cyan, Medium Magenta, Medium Yellow
-    '#C0FFFF', '#FFC0FF', '#FFFFC0'  // Very Light variations
+    // Primary RGB colors for strong chromatic aberration
+    '#FF0000', '#00FF00', '#0000FF', // Pure Red, Green, Blue
+    
+    // Secondary colors that work well with RGB separation
+    '#FF0080', '#8000FF', '#0080FF', // Magenta, Purple, Blue
+    '#FF8000', '#80FF00', '#0080FF', // Orange, Lime, Blue
+    
+    // Bright neon colors that create strong aberration
+    '#FF00FF', '#00FFFF', '#FFFF00', // Magenta, Cyan, Yellow
+    '#FF40FF', '#40FFFF', '#FFFF40', // Bright variations
+    
+    // Colors that create interesting RGB channel separation
+    '#FF2000', '#20FF00', '#0020FF', // Red-tinted, Green-tinted, Blue-tinted
+    '#FF0040', '#40FF00', '#0040FF', // Deep variations
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 };

@@ -111,7 +111,7 @@ const AnimatedTagline: React.FC = () => {
 
   return (
     <div className="text-center max-w-4xl mx-auto">
-      <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-black mb-8 leading-tight">
+      <h1 className="text-2xl md:text-5xl lg:text-6xl font-semibold text-black mb-8 leading-tight">
         Create a{' '}
         <div className="relative inline-block">
           <button
@@ -153,7 +153,7 @@ const AnimatedTagline: React.FC = () => {
                 <button
                   key={option}
                   onClick={() => handleDropdownSelect(option)}
-                  className={`block w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors duration-200 first:rounded-t-lg last:rounded-b-lg text-2xl md:text-4xl lg:text-5xl font-bold ${dropdownGradients[option as keyof typeof dropdownGradients]} bg-clip-text text-transparent`}
+                  className={`block w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors duration-200 first:rounded-t-lg last:rounded-b-lg text-xl md:text-3xl lg:text-4xl font-bold ${dropdownGradients[option as keyof typeof dropdownGradients]} bg-clip-text text-transparent`}
                 >
                   {option}
                 </button>
@@ -164,7 +164,7 @@ const AnimatedTagline: React.FC = () => {
         {' '}for my
         <br />
         <span className="relative inline-block">
-          <span className={`border-b-4 ${gradientClasses[currentIndex]} bg-clip-text text-transparent`}>
+          <span className={`border-b-4 ${gradientClasses[currentIndex]} bg-clip-text text-transparent font-secondary`}>
             {currentText}
             <span 
               className={`inline-block w-1 h-12 md:h-16 lg:h-20 bg-black ml-1 ${
@@ -175,7 +175,7 @@ const AnimatedTagline: React.FC = () => {
           </span>
           {/* Invisible text to maintain consistent width */}
           <span 
-            className="absolute top-0 left-0 opacity-0 pointer-events-none select-none"
+            className="absolute top-0 left-0 opacity-0 pointer-events-none select-none font-secondary"
             aria-hidden="true"
           >
             Network State

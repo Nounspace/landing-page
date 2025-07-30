@@ -35,6 +35,7 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [buttonClicked, setButtonClicked] = useState(false);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {
@@ -69,6 +70,10 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Trigger chromatic aberration effect
+    setButtonClicked(true);
+    setTimeout(() => setButtonClicked(false), 600);
     
     if (!validateForm()) {
       setErrorMessage('Complete required fields and try again');
@@ -154,7 +159,7 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
             {/* Header */}
-            <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-6 py-8 text-white">
+            <div className="relative bg-black px-6 py-8 text-white">
               <button
                 onClick={handleClose}
                 disabled={isSubmitting}
@@ -177,8 +182,8 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
@@ -189,7 +194,7 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Community Name */}
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="name" className="block text-md font-medium text-gray-700 mb-2">
                       Community Name *
                     </label>
                     <input
@@ -197,7 +202,7 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
                       id="name"
                       value={form.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-200 ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-colors duration-200 font-secondary text-sm ${
                         errors.name 
                           ? 'border-red-500 bg-red-50' 
                           : 'border-gray-300 hover:border-gray-400'
@@ -209,7 +214,7 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
 
                   {/* Farcaster Handle */}
                   <div>
-                    <label htmlFor="handle" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="handle" className="block text-md font-medium text-gray-700 mb-2">
                       Your Farcaster Handle *
                     </label>
                     <input
@@ -217,7 +222,7 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
                       id="handle"
                       value={form.handle}
                       onChange={(e) => handleInputChange('handle', e.target.value)}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-200 ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-colors duration-200 font-secondary text-sm ${
                         errors.handle 
                           ? 'border-red-500 bg-red-50' 
                           : 'border-gray-300 hover:border-gray-400'
@@ -229,7 +234,7 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
 
                   {/* Email */}
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="email" className="block text-md font-medium text-gray-700 mb-2">
                       Your Email *
                     </label>
                     <input
@@ -237,7 +242,7 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
                       id="email"
                       value={form.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-200 ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-colors duration-200 font-secondary text-sm ${
                         errors.email 
                           ? 'border-red-500 bg-red-50' 
                           : 'border-gray-300 hover:border-gray-400'
@@ -259,21 +264,82 @@ const WaitlistForm: React.FC<WaitlistFormProps> = ({ isOpen, onClose }) => {
                     </motion.div>
                   )}
 
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-purple-400 focus:ring-opacity-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                        Joining...
-                      </>
-                    ) : (
-                      'Join Waitlist'
-                    )}
-                  </button>
+                  {/* Submit Button with Chromatic Aberration Effect */}
+                  <div className="relative group">
+                    
+                    {/* Hover chromatic aberration layers */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <div className="absolute inset-0 bg-red-500 rounded-lg transform translate-x-0 group-hover:translate-x-0.5 transform translate-y-0 group-hover:translate-y-0 transition-transform duration-300 z-30" />
+                      <div className="absolute inset-0 bg-green-500 rounded-lg transform translate-x-0 group-hover:translate-x-1 transform translate-y-0 group-hover:translate-y-0.5 transition-transform duration-300 z-20" />
+                      <div className="absolute inset-0 bg-blue-500 rounded-lg transform translate-x-0 group-hover:translate-x-1.5 transform translate-y-0 group-hover:translate-y-1 transition-transform duration-300 z-10" />
+                    </div>
+                    
+                    <motion.button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="z-50 relative w-full bg-black text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-black focus:ring-opacity-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center overflow-hidden group-hover:shadow-2xl group-hover:shadow-black/30 group-hover:-translate-y-1"
+                      whileHover={{ y: -4 }}
+                      whileTap={{ y: 0, scale: 0.98 }}
+                    >
+                      {/* Chromatic aberration layers */}
+                      {buttonClicked && (
+                        <>
+                          <motion.div
+                            className="absolute inset-0 bg-red-500 rounded-lg origin-center"
+                            initial={{ opacity: 0, scaleX: 0, scaleY: 1 }}
+                            animate={{ 
+                              opacity: [0, 0.5, 0], 
+                              scaleX: [0, 2, 3],
+                              scaleY: [1, 1, 1]
+                            }}
+                            transition={{ duration: 0.6, ease: "easeOut", delay: 0 }}
+                          />
+                          <motion.div
+                            className="absolute inset-0 bg-green-500 rounded-lg origin-center"
+                            initial={{ opacity: 0, scaleX: 0, scaleY: 1 }}
+                            animate={{ 
+                              opacity: [0, 0.5, 0], 
+                              scaleX: [0, 2, 3],
+                              scaleY: [1, 1, 1]
+                            }}
+                            transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
+                          />
+                          <motion.div
+                            className="absolute inset-0 bg-blue-500 rounded-lg origin-center"
+                            initial={{ opacity: 0, scaleX: 0, scaleY: 1 }}
+                            animate={{ 
+                              opacity: [0, 0.5, 0], 
+                              scaleX: [0, 2, 3],
+                              scaleY: [1, 1, 1]
+                            }}
+                            transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+                          />
+                          <motion.div
+                            className="absolute inset-0 bg-black rounded-lg origin-center"
+                            initial={{ opacity: 0, scaleX: 0, scaleY: 1 }}
+                            animate={{ 
+                              opacity: [0, 0.6, 0], 
+                              scaleX: [0, 2, 3],
+                              scaleY: [1, 1, 1]
+                            }}
+                            transition={{ duration: 0.6, ease: "easeOut", delay: 0.45 }}
+                          />
+                        </>
+                      )}
+                      
+                      {/* Button content */}
+                      <span className="relative z-10">
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                            Joining...
+                          </>
+                        ) : (
+                          'Join Waitlist'
+                        )}
+                      </span>
+                    </motion.button>
+                  </div>
                 </form>
               )}
             </div>

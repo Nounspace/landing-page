@@ -13,10 +13,21 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
   const [curtainPosition, setCurtainPosition] = useState(0);
   const [isDissolving, setIsDissolving] = useState(false);
   const [hideContent, setHideContent] = useState(false);
+  const [videoSupported, setVideoSupported] = useState(true);
+  const [videoOpacity, setVideoOpacity] = useState(0);
 
   useEffect(() => {
-    // Once video is loaded, wait 3 seconds then autoplay (unless user already clicked)
+    // Check if video is supported
+    const video = document.createElement('video');
+    setVideoSupported(!!video.canPlayType);
+  }, []);
+
+  useEffect(() => {
+    // Once video is loaded, fade it in and wait 3 seconds then autoplay (unless user already clicked)
     if (videoLoaded && !isPlaying && !hasUserClicked) {
+      // Fade in the video
+      setVideoOpacity(1);
+      
       const autoplayTimer = setTimeout(() => {
         if (videoRef.current && !hasUserClicked) {
           videoRef.current.play();
@@ -74,6 +85,13 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
     togglePlay();
   };
 
+  const handleLogoClick = () => {
+    // For fallback logo, simulate the video end sequence
+    setHideContent(true);
+    setIsDissolving(true);
+    onVideoEnd?.();
+  };
+
   const handlePlay = () => {
     setIsPlaying(true);
   };
@@ -98,7 +116,7 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
   const curtainHeight = Math.max(0, window.innerHeight / 2 - curtainPosition);
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center ${!videoLoaded ? 'bg-white' : ''} ${isDissolving ? 'pointer-events-none' : ''}`}>
+    <div className={`fixed inset-0 z-50 flex items-center justify-center ${!videoLoaded && videoSupported ? 'bg-white' : ''} ${isDissolving ? 'pointer-events-none' : ''}`}>
       {/* Left curtain */}
       <div 
         className="absolute top-0 left-0 h-full"
@@ -141,9 +159,36 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
 
       {!hideContent && (
         <div className="relative w-full lg:w-2/5 h-auto max-h-full">
-          {/* Brand Logo Image - shows first while video loads */}
-          {!videoLoaded && (
-            <div className="w-full h-full flex items-center justify-center">
+          {/* Video Player - fades in once loaded */}
+          {videoSupported && (
+            <div 
+              className="relative w-full h-full cursor-pointer"
+              onClick={handleVideoClick}
+              style={{
+                opacity: videoOpacity,
+                transition: 'opacity 0.5s ease-in-out'
+              }}
+            >
+              <video
+                ref={videoRef}
+                className="w-full h-auto object-contain"
+                onLoadedData={handleVideoLoaded}
+                onPlay={handlePlay}
+                onPause={handlePause}
+                onEnded={handleVideoEnd}
+                playsInline
+                preload="auto"
+                muted
+              >
+                <source src="/logovid.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          )}
+
+          {/* Fallback Logo Image - shows if video not supported or while loading */}
+          {(!videoSupported || !videoLoaded) && (
+            <div className="w-full h-full flex items-center justify-center cursor-pointer" onClick={handleLogoClick}>
               <img
                 src="/logo.png"
                 alt="Brand Logo"
@@ -151,27 +196,6 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
               />
             </div>
           )}
-
-          {/* Video Player - appears once loaded */}
-          <div 
-            className={`${videoLoaded ? 'block' : 'hidden'} relative w-full h-full cursor-pointer`}
-            onClick={handleVideoClick}
-          >
-            <video
-              ref={videoRef}
-              className="w-full h-auto object-contain"
-              onLoadedData={handleVideoLoaded}
-              onPlay={handlePlay}
-              onPause={handlePause}
-              onEnded={handleVideoEnd}
-              playsInline
-              preload="auto"
-              muted
-            >
-              <source src="/logovid.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
         </div>
       )}
     </div>
