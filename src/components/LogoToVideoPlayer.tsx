@@ -47,6 +47,7 @@ const LogoToVideoPlayer = ({ onVideoEnd }: LogoToVideoPlayerProps) => {
   return (
     <div 
       className={`fixed inset-0 z-50 flex items-center justify-center ${!isDissolving ? 'bg-white' : ''} ${isDissolving ? 'pointer-events-none' : ''}`}
+      style={{ transform: 'translateY(-15vh)' }}
     >
       <CurtainTransition 
         isActive={isDissolving}
